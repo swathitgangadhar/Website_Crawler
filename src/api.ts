@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API_URL = 'http://localhost:8080/api';
-const token = 'your_token_here';
+const token = 'c88f69b89f1e478a9cf32be8720d54d7ab3ff6f4b9272f6f';
 
 const instance = axios.create({
   baseURL: API_URL,
