@@ -14,12 +14,13 @@ import (
 	"github.com/google/uuid"
 	"github.com/PuerkitoBio/goquery"
 	"gorm.io/driver/mysql"
+	"github.com/joho/godotenv"
 	"gorm.io/gorm"
 )
 
 type URL struct {
 	ID            uint      `json:"id" gorm:"primaryKey"`
-	UUID          string    `json:"uuid" gorm:"uniqueIndex"`
+	UUID          string    `json:"uuid" gorm:"type:varchar(36);uniqueIndex"`
 	URL           string    `json:"url"`
 	Title         string    `json:"title"`
 	HTMLVersion   string    `json:"html_version"`
@@ -40,8 +41,26 @@ func initDB() {
 	if err != nil {
 		log.Fatal("Failed to connect to DB: ", err)
 	}
+	if err := db.AutoMigrate(&URL{}); err != nil {
+		log.Fatal("AutoMigrate failed: ", err)
+	}
+
 	DB = db
-	DB.AutoMigrate(&URL{})
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Authorization")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
+	}
 }
 
 func authMiddleware() gin.HandlerFunc {
@@ -56,6 +75,10 @@ func authMiddleware() gin.HandlerFunc {
 }
 
 func main() {
+	err := godotenv.Load()
+  	if err != nil {
+    	log.Fatal("Error loading .env file")
+  	}
 	initDB()
 	r := gin.Default()
 	r.Use(cors.New(cors.Config{
@@ -65,30 +88,43 @@ func main() {
 		AllowCredentials: true,
 	}))
 	r.Use(authMiddleware())
-
+	
 	r.POST("/api/urls", func(c *gin.Context) {
-		var body struct {
-			URL string `json:"url"`
-		}
-		if err := c.BindJSON(&body); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
-			return
-		}
+	var body struct {
+		URL string `json:"url"`
+	}
+	if err := c.BindJSON(&body); err != nil {
+		log.Println("Failed to parse JSON:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
+		return
+	}
 
-		uuidStr := uuid.New().String()
-		entry := URL{UUID: uuidStr, URL: body.URL, Status: "queued"}
-		DB.Create(&entry)
+	uuidStr := uuid.New().String()
+	entry := URL{UUID: uuidStr, URL: body.URL, Status: "queued"}
 
-		go analyzeURL(entry.ID, body.URL)
+	if err := DB.Create(&entry).Error; err != nil {
+		log.Println("Failed to create DB entry:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "database error"})
+		return
+	}
 
-		c.JSON(http.StatusCreated, entry)
-	})
+	go analyzeURL(entry.ID, body.URL)
+
+	c.JSON(http.StatusCreated, entry)
+})
+
 
 	r.GET("/api/urls", func(c *gin.Context) {
-		var urls []URL
-		DB.Order("id desc").Find(&urls)
-		c.JSON(http.StatusOK, urls)
-	})
+	var urls []URL
+
+	if err := DB.Order("id desc").Find(&urls).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch URLs"})
+		return
+	}
+
+	c.JSON(http.StatusOK, urls)
+})
+
 
 	r.GET("/api/urls/:id", func(c *gin.Context) {
 		var url URL

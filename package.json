@@ -10,6 +10,9 @@
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.10.0",
     "chart.js": "^4.5.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "http-proxy-middleware": "^3.0.5",
     "react": "^19.1.0",
     "react-chartjs-2": "^5.3.0",
     "react-dom": "^19.1.0",
@@ -22,6 +25,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "proxy": "http://localhost:8080",
+    "prettify": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss}\"",
+    "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\" --fix",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
