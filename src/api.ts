@@ -32,3 +32,14 @@ export const getURLDetail = async (id: string | number) => {
   if (!res.ok) throw new Error('Failed to fetch URL details');
   return await res.json();
 };
+
+export const deleteURLs = async (ids: number[]) => {
+  await fetch(`/api/urls/delete`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ ids }),
+  });
+};

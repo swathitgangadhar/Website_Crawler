@@ -113,6 +113,28 @@ func main() {
 	c.JSON(http.StatusCreated, entry)
 })
 
+r.DELETE("/api/urls", func(c *gin.Context) {
+	var body struct {
+		IDs []uint `json:"ids"`
+	}
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	if len(body.IDs) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No IDs provided"})
+		return
+	}
+
+	if err := DB.Delete(&URL{}, body.IDs).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete URLs"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "URLs deleted successfully"})
+})
+
 
 	r.GET("/api/urls", func(c *gin.Context) {
 	var urls []URL
