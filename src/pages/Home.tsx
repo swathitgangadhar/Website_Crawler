@@ -44,15 +44,15 @@ function Home() {
  
   return (  
 <div
-  className="bg-primary text-white rounded shadow-lg mt-4 p-4"
-  style={{ backgroundColor: '#335eff', height: '100%', width: '100%' }}
+  className=" bg-primary text-white rounded shadow-lg mt-4 p-4"
+  style={{ backgroundColor: '#339fff'}}
 >
-  <div  className="d-flex justify-content-center align-items-center vh-100 ">
-      <div className="mb-4 flex gap-8 items-center justify-between">
+  <div  className="mx-2 rounded-3 shadow my-5 py-2  brand-tertiary-color d-flex" style={{textAlign:'center'}}>
         <h1 className="text-2xl font-bold">Website Management</h1>
+        <Form >
         <Form.Control
           className='mb-3'
-          style={{ width: '300px' }}
+          style={{ width: '300px', height: '30px' }}
           type="text"
           id="enterUrl"
           onChange={(e) => setUrlInput(e.target.value)}
@@ -60,34 +60,39 @@ function Home() {
           value={urlInput}
         />
           <Button
-            className='mb-3'
+            className='mb-3'   
             onClick={handleSubmit}
+            style={{ width: '100px', height: '30px', marginLeft: '10px', backgroundColor: "white"}}
             variant='light'
             size='lg'
           >
           Submit
           </Button>
-        </div>
+        </Form>
 
       </div>
       {loading ? (
         <p>Loading...</p>
       ) : ( filteredUrls.length !== 0 ? (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto" style={{textAlign:'center'}}>
           <Form.Control
+          style={{ width: '300px', height: '30px', marginBottom: '10px' ,marginTop: '10px' }}
           type="text"
           placeholder="Search by title"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       /> 
-      <Button
-            onClick={handleDelete}
-            variant='primary'
-           disabled={selected.length === 0}
-          >
-            Delete Selected
-          </Button>
-          <Table striped bordered hover>            
+      {selected.length !== 0 && (
+        <Button
+          onClick={handleDelete}
+          variant='primary'
+          style={{ width: '100px', height: '30px', marginLeft: '10px', backgroundColor: "white"                              
+          }}
+          >          
+           Delete 
+        </Button>
+      )}
+          <Table striped bordered hover  className="container mt-4" >            
             <thead>
               <tr className="bg-gray-100">
                 <th className="p-2 border">Select</th>
@@ -140,7 +145,7 @@ function Home() {
           </Table>
         </div>
       ) : (
-        <div className="overflow-x-auto">
+        <div  className="mx-2 rounded-3 shadow my-5 py-2 current-weather-assets brand-tertiary-color d-flex " style={{textAlign:'center'}}>
           No URLs found.
         </div>)
       )}

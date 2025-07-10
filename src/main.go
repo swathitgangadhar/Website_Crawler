@@ -117,6 +117,7 @@ r.DELETE("/api/urls", func(c *gin.Context) {
 	var body struct {
 		IDs []uint `json:"ids"`
 	}
+	log.Println("Failed to parse JSON:", body.IDs)
 	if err := c.ShouldBindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
