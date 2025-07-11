@@ -2,6 +2,7 @@
   "name": "task_sykell",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://swathitgangadhar.github.io/Website_Crawler",
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -55,8 +56,9 @@
   "devDependencies": {
     "@types/axios": "^0.9.36",
     "@types/jest": "26.0.20",
-    "@types/react": "^17.0.3",
     "@types/react-chartjs-2": "^2.0.2",
-    "@types/react-dom": "^19.1.6"
+    "@types/react": "^18.2.36",
+    "@types/react-dom": "^18.2.14",
+    "@testing-library/react": "^14.1.2" 
   }
 }
