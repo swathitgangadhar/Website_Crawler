@@ -34,8 +34,9 @@ export const getURLDetail = async (id: string | number) => {
 };
 
 export const deleteURLs = async (ids: number[]) => {
-  await fetch(`/api/urls/delete`, {
-    method: 'POST',
+
+  await fetch(`${API_BASE}/urls/delete`, {
+    method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,

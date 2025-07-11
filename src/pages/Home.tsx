@@ -1,7 +1,9 @@
-import  { useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { deleteURLs, getURLs, submitURL } from '../api';
 import { useNavigate } from 'react-router-dom';
-import { Button, Table, Form } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
+import Table from 'react-bootstrap/Table';
+
 
 function Home() {
   const [urlInput, setUrlInput] = useState('');
@@ -19,6 +21,11 @@ function Home() {
     setUrls(res || []);
     setLoading(false);
   };
+
+  useEffect(()=> {
+    loadUrls();
+  }, []);
+
 
   const handleSubmit = async () => {
     if (!urlInput) return;
@@ -43,16 +50,13 @@ function Home() {
 
  
   return (  
-<div
-  className=" bg-primary text-white rounded shadow-lg mt-4 p-4"
-  style={{ backgroundColor: '#339fff'}}
->
-  <div  className="mx-2 rounded-3 shadow my-5 py-2  brand-tertiary-color d-flex" style={{textAlign:'center'}}>
+    <div className="text-white rounded shadow-lg">
+      <div  className="mx-2 rounded-3 shadow my-5 py-2 d-flex" style={{textAlign:'center'}}>
         <h1 className="text-2xl font-bold">Website Management</h1>
         <Form >
         <Form.Control
           className='mb-3'
-          style={{ width: '300px', height: '30px' }}
+          style={{ width: '300px', height: '30px',marginBottom: '10px' }}
           type="text"
           id="enterUrl"
           onChange={(e) => setUrlInput(e.target.value)}
@@ -92,25 +96,25 @@ function Home() {
            Delete 
         </Button>
       )}
-          <Table striped bordered hover  className="container mt-4" >            
+          <Table striped bordered hover  className="container mt-4 table-striped table-hover">            
             <thead>
-              <tr className="bg-gray-100">
-                <th className="p-2 border">Select</th>
-                <th className="p-2 border">Title</th>
-                <th className="p-2 border">HTML Version</th>
-                <th className="p-2 border">H1</th>
-                <th className="p-2 border">Internal</th>
-                <th className="p-2 border">External</th>
-                <th className="p-2 border">Broken</th>
-                <th className="p-2 border">Login Form</th>
-                <th className="p-2 border">Status</th>
-                <th className="p-2 border">Action</th>
+              <tr>
+                <th >Select</th>
+                <th >Title</th>
+                <th>HTML Version</th>
+                <th>H1</th>
+                <th>Internal</th>
+                <th>External</th>
+                <th>Broken</th>
+                <th>Login Form</th>
+                <th>Status</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
               {filteredUrls.map((url) => (
                 <tr key={url.id} className="text-center border-t">
-                  <td className="p-2 border">
+                  <td>
                     <input
                       type="checkbox"
                       checked={selected.includes(url.id)}
@@ -123,15 +127,15 @@ function Home() {
                       }
                     />
                   </td>
-                  <td className="p-2 border">{url.title}</td>
-                  <td className="p-2 border">{url.html_version}</td>
-                  <td className="p-2 border">{url.h1_count}</td>
-                  <td className="p-2 border">{url.internal_links}</td>
-                  <td className="p-2 border">{url.external_links}</td>
-                  <td className="p-2 border">{url.broken_links}</td>
-                  <td className="p-2 border">{url.has_login_form ? 'Yes' : 'No'}</td>
-                  <td className="p-2 border">{url.status}</td>
-                  <td className="p-2 border">
+                  <td>{url.title}</td>
+                  <td>{url.html_version}</td>
+                  <td>{url.h1_count}</td>
+                  <td>{url.internal_links}</td>
+                  <td>{url.external_links}</td>
+                  <td>{url.broken_links}</td>
+                  <td>{url.has_login_form ? 'Yes' : 'No'}</td>
+                  <td>{url.status}</td>
+                  <td>
                     <button
                       className="text-blue-600 underline"
                       onClick={() => navigate(`/detail/${url.id}`)}

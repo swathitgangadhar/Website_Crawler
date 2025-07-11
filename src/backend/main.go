@@ -113,7 +113,7 @@ func main() {
 	c.JSON(http.StatusCreated, entry)
 })
 
-r.DELETE("/api/urls", func(c *gin.Context) {
+r.DELETE("/api/urls/delete", func(c *gin.Context) {
 	var body struct {
 		IDs []uint `json:"ids"`
 	}

@@ -29,7 +29,7 @@ const Detail = () => {
     <div className="p-6">
       <h2 className="text-xl font-semibold mb-4">Details for: {data.title}</h2>
 
-      <div className="mb-6 style={{ maxWidth: '60px' maxHeight: '60px' }}" >
+      <div className="mb-6" >
         <Bar
           data={{
             labels: ['Internal Links', 'External Links'],
@@ -42,7 +42,6 @@ const Detail = () => {
             ]
           }}
           height={100}
-          width={1100}
           options={{
             responsive: true,
             plugins: {
