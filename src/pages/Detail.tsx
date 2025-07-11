@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getURLDetail } from '../api';
 import {
@@ -13,16 +13,19 @@ import { Bar } from 'react-chartjs-2';
 
 ChartJS.register(BarElement, Tooltip, Legend, CategoryScale, LinearScale);
 
+// Detail component to display URL details and broken links
 const Detail = () => {
   const { id } = useParams();
   const [data, setData] = useState<any>(null);
 
+  // Fetch URL details when the component mounts
   useEffect(() => {
     if (id) {
       getURLDetail(id).then(setData);
     }
   }, [id]);
 
+  // If data is not yet loaded, show a loading state
   if (!data) return <div>Loading...</div>;
 
   return (

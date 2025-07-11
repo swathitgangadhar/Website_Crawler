@@ -13,6 +13,7 @@ function Home() {
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
 
+  // Function to load URLs from the API
   const loadUrls = async () => {
     setLoading(true);
     const res = await getURLs();
@@ -22,11 +23,12 @@ function Home() {
     setLoading(false);
   };
 
+ // Load URLs when the component mounts
   useEffect(()=> {
     loadUrls();
   }, []);
 
-
+  // Handle form submission
   const handleSubmit = async () => {
     if (!urlInput) return;
     console.log("res");
@@ -35,7 +37,7 @@ function Home() {
     await loadUrls();
   };
   
-
+  // Handle delete action which deletes selected URLs
   const handleDelete = async () => {
     if (selected.length > 0) {
       await deleteURLs(selected);
@@ -44,6 +46,7 @@ function Home() {
     }
   };
 
+  // Filter URLs based on search input
   const filteredUrls = urls.filter((url) =>
     url.title.toLowerCase().includes(search.toLowerCase())
   );

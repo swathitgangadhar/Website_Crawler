@@ -35,6 +35,10 @@ type URL struct {
 
 var DB *gorm.DB
 
+
+/* initDB initializes the database connection and migrates the URL model
+ It reads the DSN from the environment variable MYSQL_DSN
+If the connection fails or migration fails, it logs the error and exits*/
 func initDB() {
 	dsn := os.Getenv("MYSQL_DSN") 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -48,6 +52,7 @@ func initDB() {
 	DB = db
 }
 
+// CORSMiddleware sets up CORS headers for the application
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
@@ -63,6 +68,7 @@ func CORSMiddleware() gin.HandlerFunc {
 	}
 }
 
+ // authMiddleware checks for a valid Authorization token
 func authMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.GetHeader("Authorization")
@@ -113,6 +119,7 @@ func main() {
 	c.JSON(http.StatusCreated, entry)
 })
 
+// Delete URLs
 r.DELETE("/api/urls/delete", func(c *gin.Context) {
 	var body struct {
 		IDs []uint `json:"ids"`
@@ -137,6 +144,7 @@ r.DELETE("/api/urls/delete", func(c *gin.Context) {
 })
 
 
+	// Get all URLs
 	r.GET("/api/urls", func(c *gin.Context) {
 	var urls []URL
 
@@ -148,7 +156,7 @@ r.DELETE("/api/urls/delete", func(c *gin.Context) {
 	c.JSON(http.StatusOK, urls)
 })
 
-
+	// Get URL by ID
 	r.GET("/api/urls/:id", func(c *gin.Context) {
 		var url URL
 		if err := DB.First(&url, c.Param("id")).Error; err != nil {
@@ -161,6 +169,7 @@ r.DELETE("/api/urls/delete", func(c *gin.Context) {
 	r.Run(":8080")
 }
 
+// analyzeURL fetches the URL, extracts metadata, and updates the database
 func analyzeURL(id uint, inputURL string) {
 	DB.Model(&URL{}).Where("id = ?", id).Update("status", "running")
 
